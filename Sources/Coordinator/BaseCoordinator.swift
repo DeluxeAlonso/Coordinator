@@ -14,22 +14,22 @@ import UIKit
  * handling common coordinator tasks such as navigation controller management,
  * view controller presentation, and coordinator hierarchy maintenance.
  */
-class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
+open class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
 
     /// Array to store and maintain references to child coordinators.
-    var childCoordinators: [Coordinator] = []
+    open var childCoordinators: [Coordinator] = []
 
     /// Reference to the parent coordinator in the hierarchy.
-    var parentCoordinator: Coordinator?
+    open var parentCoordinator: Coordinator?
 
     /// The main navigation controller used by this coordinator.
-    var navigationController: UINavigationController
+    open var navigationController: UINavigationController
 
     /// Optional secondary navigation controller for detail views (e.g., in split view controllers).
-    var detailNavigationController: UINavigationController?
+    open var detailNavigationController: UINavigationController?
 
     /// Flag indicating whether this coordinator should be automatically removed when its view controllers are dismissed.
-    private(set) var shouldBeAutomaticallyFinished: Bool = false
+    private(set) public var shouldBeAutomaticallyFinished: Bool = false
 
     /// The main view controller managed by this coordinator.
     private var viewController: UIViewController?
@@ -53,7 +53,7 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
      * Starts the coordinator's flow.
      * This is an abstract method that must be implemented by subclasses.
      */
-    func start() {
+    open func start() {
         fatalError("Start method should be implemented")
     }
 
@@ -63,7 +63,7 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
      *
      * - Returns: The main view controller for this coordinator's flow.
      */
-    func build() -> UIViewController {
+    open func build() -> UIViewController {
         fatalError("Build method should be implemented")
     }
 
@@ -72,7 +72,7 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
      *
      * - Parameter coordinatorMode: How the coordinator's view controller will be presented.
      */
-    func start(coordinatorMode: CoordinatorMode = .push) {
+    open func start(coordinatorMode: CoordinatorMode = .push) {
         let viewController = build()
 
         switch coordinatorMode {
@@ -121,7 +121,7 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
     /**
      * Dismisses the coordinator's view controller.
      */
-    func dismiss() {
+    open func dismiss() {
         dismiss(completion: nil)
     }
 
@@ -130,7 +130,7 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
      *
      * - Parameter completion: Optional closure to be executed after dismissal.
      */
-    func dismiss(completion: (() -> Void)? = nil) {
+    open func dismiss(completion: (() -> Void)? = nil) {
         switch coordinatorMode {
         case .push:
             // For push mode, pop the view controller
@@ -152,18 +152,18 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
     }
 
     /// The navigation controller delegate used by this coordinator.
-    var navigationControllerDelegate: UINavigationControllerDelegate? {
+    open var navigationControllerDelegate: UINavigationControllerDelegate? {
         self
     }
 
     /// Flag to force setting this coordinator as the navigation controller's delegate.
-    var shouldForceDelegateOverride: Bool = false
+    open var shouldForceDelegateOverride: Bool = false
 
     /**
      * Sets up the navigation controller delegate.
      * This is called during initialization to ensure proper navigation events are captured.
      */
-    func setupNavigationControllerDelegate() {
+    open func setupNavigationControllerDelegate() {
         guard shouldForceDelegateOverride || navigationController.delegate == nil else {
             return
         }
@@ -174,7 +174,7 @@ class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
      * UINavigationControllerDelegate method called when a view controller is shown.
      * Used to detect when a view controller is popped, to clean up coordinators as needed.
      */
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+    open func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         // We only intend to cover push/pop scenarios here. Present/dismissal handling should be done manually.
         let isBeingPresented = navigationController.isBeingPresented
         guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from), !isBeingPresented else {

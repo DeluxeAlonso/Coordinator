@@ -15,7 +15,7 @@ import UIKit
  * Each coordinator is responsible for a specific flow within the application.
  */
 @MainActor
-protocol Coordinator: AnyObject {
+public protocol Coordinator: AnyObject {
 
     /// Array to store and maintain references to child coordinators.
     var childCoordinators: [Coordinator] { get set }
@@ -69,7 +69,7 @@ protocol Coordinator: AnyObject {
     func dismiss(completion: (() -> Void)?)
 }
 
-extension Coordinator {
+public extension Coordinator {
 
     /**
      * Returns the parent coordinator or self if no parent is defined.

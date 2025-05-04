@@ -13,11 +13,11 @@ import UIKit
  * This structure provides a way to customize modal presentations
  * with specific presentation styles and transition animations.
  */
-struct CoordinatorModePresentConfiguration {
+public struct CoordinatorModePresentConfiguration {
 
     /// The style for modal presentation (fullscreen, formSheet, popover, etc.).
-    let modalPresentationStyle: UIModalPresentationStyle
+    public let modalPresentationStyle: UIModalPresentationStyle
 
     /// Optional delegate for custom transition animations.
-    let transitioningDelegate: UIViewControllerTransitioningDelegate?
+    public let transitioningDelegate: UIViewControllerTransitioningDelegate?
 }

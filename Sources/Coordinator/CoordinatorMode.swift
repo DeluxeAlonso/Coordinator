@@ -13,7 +13,7 @@ import UIKit
  * This enum allows coordinators to present their view controllers in different ways,
  * providing flexibility in navigation patterns across the application.
  */
-enum CoordinatorMode {
+public enum CoordinatorMode {
 
     /// Pushes the view controller onto the navigation stack.
     case push
