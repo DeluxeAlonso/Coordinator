@@ -67,6 +67,14 @@ public protocol Coordinator: AnyObject {
      * - Parameter completion: Optional closure to be executed after dismissal.
      */
     func dismiss(completion: (() -> Void)?)
+
+    /**
+     * Dismisses to the root of the navigation stack, removing all child coordinators.
+     *
+     * - Parameter completion: Optional closure to be executed after dismissal to root.
+     */
+    func dismissToRoot(completion: (() -> Void)?)
+
 }
 
 public extension Coordinator {

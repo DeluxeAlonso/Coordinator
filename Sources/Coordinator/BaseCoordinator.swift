@@ -37,6 +37,9 @@ open class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegat
     /// The presentation mode used for this coordinator.
     private var coordinatorMode: CoordinatorMode = .push
 
+    /// Stores the root view controller for dismissToRoot functionality.
+    private var rootViewController: UIViewController?
+
     /**
      * Initializes a new coordinator with a navigation controller.
      *
@@ -47,6 +50,9 @@ open class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegat
         super.init()
 
         setupNavigationControllerDelegate()
+
+        // Store the root view controller for dismissToRoot functionality
+        rootViewController = navigationController.viewControllers.first
     }
 
     /**
@@ -187,4 +193,67 @@ open class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegat
         }
         unwrappedParentCoordinator.childDidFinish()
     }
+
+    /**
+     * Dismisses to the root of the navigation stack, removing all child coordinators.
+     *
+     * - Parameter completion: Optional closure to be executed after dismissal to root.
+     */
+    open func dismissToRoot(completion: (() -> Void)? = nil) {
+        switch coordinatorMode {
+        case .push:
+            // Remove all child coordinators first
+            childCoordinators.removeAll()
+
+            // Pop to root view controller
+            CATransaction.begin()
+            CATransaction.setCompletionBlock {
+                completion?()
+            }
+
+            if let rootViewController = rootViewController {
+                navigationController.popToViewController(rootViewController, animated: true)
+            } else {
+                navigationController.popToRootViewController(animated: true)
+            }
+
+            CATransaction.commit()
+
+        case .present:
+            dismissPresentationToRoot(completion: completion)
+
+        case .embed(let parentViewController, _):
+            break
+        }
+    }
+
+    /**
+     * Helper method to dismiss all presented view controllers back to the root.
+     * This handles the case where multiple view controllers are presented in a chain.
+     */
+    private func dismissPresentationToRoot(completion: (() -> Void)?) {
+        // First, clean up all child coordinators
+        childCoordinators.removeAll()
+
+        // Find the root presenting view controller
+        var rootPresentingViewController = navigationController.presentingViewController
+        while let presentingViewController = rootPresentingViewController?.presentingViewController {
+            rootPresentingViewController = presentingViewController
+        }
+
+        // If we found a root presenting view controller, dismiss to it
+        if let rootPresenting = rootPresentingViewController {
+            rootPresenting.dismiss(animated: true) { [weak self] in
+                self?.unwrappedParentCoordinator.childDidFinish()
+                completion?()
+            }
+        } else {
+            // Fallback: just dismiss the current presentation
+            navigationController.dismiss(animated: true) { [weak self] in
+                self?.unwrappedParentCoordinator.childDidFinish()
+                completion?()
+            }
+        }
+    }
+
 }
