@@ -20,4 +20,11 @@ public struct CoordinatorModePresentConfiguration {
 
     /// Optional delegate for custom transition animations.
     public let transitioningDelegate: UIViewControllerTransitioningDelegate?
+
+    public init(modalPresentationStyle: UIModalPresentationStyle,
+                transitioningDelegate: UIViewControllerTransitioningDelegate? = nil) {
+        self.modalPresentationStyle = modalPresentationStyle
+        self.transitioningDelegate = transitioningDelegate
+    }
+
 }
