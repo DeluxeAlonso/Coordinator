@@ -44,6 +44,14 @@ public protocol Coordinator: AnyObject {
     func start(coordinatorMode: CoordinatorMode)
 
     /**
+     * Starts a coordinator with a presentation mode.
+     *
+     * - Parameter coordinator: Coordinator to be presented.
+     * - Parameter coordinatorMode: How the coordinator's view controller will be presented.
+     */
+    func start(_ coordinator: Coordinator, coordinatorMode: CoordinatorMode)
+
+    /**
      * Removes the last child coordinator from the hierarchy.
      * Typically called when a flow completes and its coordinator is no longer needed.
      */

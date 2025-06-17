@@ -74,6 +74,20 @@ open class BaseCoordinator: NSObject, Coordinator, UINavigationControllerDelegat
     }
 
     /**
+     * Starts a coordinator with a presentation mode.
+     *
+     * - Parameter coordinator: Coordinator to be presented.
+     * - Parameter coordinatorMode: How the coordinator's view controller will be presented.
+     */
+    open func start(_ coordinator: Coordinator, coordinatorMode: CoordinatorMode = .push) {
+
+        coordinator.parentCoordinator = unwrappedParentCoordinator
+        unwrappedParentCoordinator.childCoordinators.append(coordinator)
+
+        coordinator.start(coordinatorMode: coordinatorMode)
+    }
+
+    /**
      * Starts the coordinator with a specific presentation mode.
      *
      * - Parameter coordinatorMode: How the coordinator's view controller will be presented.
